@@ -1,7 +1,7 @@
 ## List of all models for which import/export has been tested with Fabrik.
 
 ### Recognition
-
+* CNDS [\[Source\]](https://github.com/lwwang/Places_CNDS_model)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111080430dzvwc)
 * Cifar10 CNN [\[Source\]](https://github.com/BVLC/caffe/tree/master/examples/cifar10)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180107213805mhzsp)
 * MNIST LeNet [\[Source\]](https://github.com/wenwei202/caffe/blob/scnn/examples/mnist)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180101094606ewlrt#/?_k=uu2fiw)
 * AlexNet [\[Source\]](https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113052pazsy)
