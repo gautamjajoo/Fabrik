@@ -594,9 +594,18 @@ layer {
     stride: 8
   }
 }
-layer { type: 'Crop' name: 'crop' bottom: 'bigscore' bottom: 'data' top: 'coarse' }
+layer { 
+type: 'Crop' 
+name: 'crop' 
+bottom: 'bigscore' 
+bottom: 'data'
+ top: 'coarse'
+  }
 
-layer { type: 'Split' name: 'splitting'
-  bottom: 'coarse' top: 'unary' top: 'Q0'
+layer {
+ type: 'Split' 
+ name: 'splitting'
+  bottom: 'coarse'
+   top: 'unary'
+    top: 'Q0'
 }
-
