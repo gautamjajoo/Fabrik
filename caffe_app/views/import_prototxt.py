@@ -6,9 +6,12 @@ from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 import tempfile
 import subprocess
-
+import urllib2
+from urlparse import urlparse
 
 # ******Data Layers******
+
+
 def ImageData(layer):
     params = {}
     params['source'] = layer.image_data_param.source
@@ -466,6 +469,16 @@ def ContrastiveLoss(layer):
     return params
 
 
+def Concat(layer):
+    params = {}
+    if (layer.concat_param.axis is not None):
+        params['axis'] = layer.concat_param.axis
+    else:
+        # default value for axis of concat in caffe
+        params['axis'] = 1
+    return params
+
+
 # ********** Python Layer **********
 def Python(layer):
     params = {}
@@ -538,12 +551,14 @@ layer_dict = {'Accuracy': Accuracy,
               'Python': Python,
               'LRN': LRN,
               'LSTM': Recurrent,
-              'RNN': Recurrent
+              'RNN': Recurrent,
+              'Concat': Concat
               }
 
 
 @csrf_exempt
 def import_prototxt(request):
+    prototxtIsText = False
     if request.method == 'POST':
         if ('file' in request.FILES) and \
            (request.FILES['file'].content_type == 'application/octet-stream' or
@@ -561,11 +576,26 @@ def import_prototxt(request):
             except Exception:
                 return JsonResponse({'result': 'error',
                                      'error': 'No Prototxt model file found'})
+        elif 'config' in request.POST:
+            prototxt = request.POST['config']
+            prototxtIsText = True
+        elif 'url' in request.POST:
+            try:
+                url = urlparse(request.POST['url'])
+                if url.netloc == 'github.com':
+                    url = url._replace(netloc='raw.githubusercontent.com')
+                    url = url._replace(path=url.path.replace('blob/', ''))
+                prototxt = urllib2.urlopen(url.geturl())
+            except Exception as ex:
+                return JsonResponse({'result': 'error', 'error': 'Invalid URL\n'+str(ex)})
         caffe_net = caffe_pb2.NetParameter()
 
         # try to convert to new prototxt
         try:
-            content = prototxt.read()
+            if prototxtIsText is True:
+                content = prototxt
+            else:
+                content = prototxt.read()
             tempFile = tempfile.NamedTemporaryFile()
             tempFile.write(content)
             tempFile.seek(0)
